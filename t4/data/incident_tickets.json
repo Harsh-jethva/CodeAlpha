@@ -1,0 +1,8 @@
+{"timestamp": "2026-05-10T19:47:46.123456", "src_ip": "192.0.2.88", "threat": "Buffer Overflow - Long URL string", "severity": 1, "status": "open", "ticket_id": "INC-1715406466"}
+{"timestamp": "2026-05-10T19:48:21.234567", "src_ip": "203.0.113.75", "threat": "Command Injection - Shell metacharacters in URL", "severity": 1, "status": "open", "ticket_id": "INC-1715406501"}
+{"timestamp": "2026-05-10T19:49:11.345678", "src_ip": "198.51.100.30", "threat": "DDoS - SYN flood pattern detected", "severity": 1, "status": "open", "ticket_id": "INC-1715406551"}
+{"timestamp": "2026-05-10T19:50:31.456789", "src_ip": "192.0.2.100", "threat": "Malware - Known malware domain detected", "severity": 1, "status": "open", "ticket_id": "INC-1715406631"}
+{"timestamp": "2026-05-10T19:53:46.567890", "src_ip": "203.0.113.85", "threat": "Exploit - Shellshock CGI vulnerability", "severity": 1, "status": "open", "ticket_id": "INC-1715406826"}
+{"timestamp": "2026-05-10T19:54:21.678901", "src_ip": "198.51.100.55", "threat": "DDoS - DNS amplification attack", "severity": 1, "status": "open", "ticket_id": "INC-1715406861"}
+{"timestamp": "2026-05-10T19:55:11.789012", "src_ip": "192.0.2.120", "threat": "Botnet - IRC communication attempt", "severity": 1, "status": "open", "ticket_id": "INC-1715406911"}
+{"timestamp": "2026-05-10T19:57:31.890123", "src_ip": "192.0.2.95", "threat": "Ransomware - Suspicious executable behavior", "severity": 1, "status": "open", "ticket_id": "INC-1715407051"}

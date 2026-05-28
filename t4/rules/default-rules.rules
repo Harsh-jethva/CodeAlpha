@@ -1,0 +1,158 @@
+# Default IDS Rules - Standard Detection Patterns
+# SID range: 2000000-2009999 (Default rules)
+
+# ============================================
+# PROTOCOL VIOLATIONS
+# ============================================
+
+alert tcp any any -> any any (msg:"Invalid TCP flags - SYN+FIN"; 
+  flags:SF,!ACK,!RST; sid:2000001; rev:1; classtype:protocol-violation;)
+
+alert tcp any any -> any any (msg:"Invalid TCP flags - All flags set";
+  flags:FSRPAUEC; sid:2000002; rev:1; classtype:protocol-violation;)
+
+alert tcp any any -> any any (msg:"TCP flag 0"; 
+  flags:0; sid:2000003; rev:1; classtype:protocol-violation;)
+
+# ============================================
+# POLICY VIOLATIONS
+# ============================================
+
+alert tcp $HOME_NET any -> $EXTERNAL_NET 23 (msg:"Policy Violation - Telnet to external";
+  flow:to_server,established; sid:2000010; rev:1; classtype:policy-violation;)
+
+alert tcp $HOME_NET any -> $EXTERNAL_NET 135 (msg:"Policy Violation - RPC to external";
+  flow:to_server,established; sid:2000011; rev:1; classtype:policy-violation;)
+
+alert tcp $HOME_NET any -> $EXTERNAL_NET 445 (msg:"Policy Violation - SMB to external";
+  flow:to_server,established; sid:2000012; rev:1; classtype:policy-violation;)
+
+alert tcp any any -> $INTERNAL_NET any (msg:"Policy Violation - Outbound SSH to internal";
+  flow:to_server; sid:2000013; rev:1; classtype:policy-violation;)
+
+# ============================================
+# SUSPICIOUS PATTERNS
+# ============================================
+
+alert http any any -> any any (msg:"Suspicious HTTP - Web shell upload";
+  flow:to_server,established; http_client_body; 
+  content:".php"; content:".jsp"; content:".asp"; 
+  sid:2000020; rev:1; classtype:web-application-attack;)
+
+alert http any any -> any any (msg:"Suspicious HTTP - Null byte injection";
+  flow:to_server,established; http_uri; content:"%00";
+  sid:2000021; rev:1; classtype:web-application-attack;)
+
+alert dns any any -> any 53 (msg:"Suspicious DNS - Query flood";
+  flow:to_server; threshold:type both,track by_src,count 50,seconds 5;
+  sid:2000022; rev:1; classtype:suspicious-protocol;)
+
+# ============================================
+# APPLICATION ATTACKS
+# ============================================
+
+alert http any any -> any any (msg:"Application Attack - XSS attempt";
+  flow:to_server,established; http_uri; 
+  content:"<script"; nocase; sid:2000030; rev:1; classtype:web-application-attack;)
+
+alert http any any -> any any (msg:"Application Attack - Directory traversal";
+  flow:to_server,established; http_uri;
+  content:"../"; sid:2000031; rev:1; classtype:web-application-attack;)
+
+alert http any any -> any any (msg:"Application Attack - Path traversal with encoding";
+  flow:to_server,established; http_uri;
+  content:"..%2f"; nocase; sid:2000032; rev:1; classtype:web-application-attack;)
+
+alert http any any -> any any (msg:"Application Attack - Local file inclusion";
+  flow:to_server,established; http_uri;
+  content:"file://"; nocase; sid:2000033; rev:1; classtype:web-application-attack;)
+
+# ============================================
+# NETWORK DEFENSE EVASION
+# ============================================
+
+alert tcp any any -> any any (msg:"Evasion - Excessive packet fragmentation";
+  fragbits:!M; threshold:type both,track by_src,count 100,seconds 10;
+  sid:2000040; rev:1; classtype:unusual-traffic;)
+
+alert tcp any any -> any any (msg:"Evasion - Invalid checksum";
+  flow:to_server; flags:S; sid:2000041; rev:1; classtype:suspicious-traffic;)
+
+# ============================================
+# SYSTEM ACCESS ATTEMPTS
+# ============================================
+
+alert tcp any any -> $HOME_NET 3389 (msg:"System Access - RDP login attempt";
+  flow:to_server,new; flags:S; sid:2000050; rev:1; classtype:attempted-admin;)
+
+alert tcp any any -> $HOME_NET 5432 (msg:"System Access - PostgreSQL connection attempt";
+  flow:to_server,new; flags:S; sid:2000051; rev:1; classtype:attempted-admin;)
+
+alert tcp any any -> $HOME_NET 3306 (msg:"System Access - MySQL connection attempt";
+  flow:to_server,new; flags:S; sid:2000052; rev:1; classtype:attempted-admin;)
+
+alert tcp any any -> $HOME_NET 1433 (msg:"System Access - MSSQL connection attempt";
+  flow:to_server,new; flags:S; sid:2000053; rev:1; classtype:attempted-admin;)
+
+# ============================================
+# CREDENTIAL ATTACKS
+# ============================================
+
+alert http any any -> any any (msg:"Credential Attack - HTTP basic auth attempt";
+  flow:to_server,established; http_header; content:"Authorization|3a|";
+  nocase; sid:2000060; rev:1; classtype:attempted-admin;)
+
+alert ftp any any -> any 21 (msg:"Credential Attack - FTP authentication";
+  flow:to_server,established; content:"USER"; offset:0; depth:4;
+  sid:2000061; rev:1; classtype:attempted-admin;)
+
+# ============================================
+# NETWORK SCANNING TOOLS
+# ============================================
+
+alert tcp any any -> any any (msg:"Network Tool - nmap SYN scan";
+  flow:to_server; flags:S; window:1024; sid:2000070; rev:1; classtype:attempted-recon;)
+
+alert tcp any any -> any any (msg:"Network Tool - masscan activity";
+  flow:to_server; flags:S; threshold:type both,track by_src,count 1000,seconds 60;
+  sid:2000071; rev:1; classtype:attempted-recon;)
+
+# ============================================
+# VPN & TUNNELING
+# ============================================
+
+alert tcp any any -> any 1194 (msg:"VPN Protocol - OpenVPN connection attempt";
+  flow:to_server,new; sid:2000080; rev:1; classtype:policy-violation;)
+
+alert tcp any any -> any 1723 (msg:"VPN Protocol - PPTP connection attempt";
+  flow:to_server,new; sid:2000081; rev:1; classtype:policy-violation;)
+
+# ============================================
+# PROXY & TUNNELING
+# ============================================
+
+alert http any any -> any any (msg:"Proxy - CONNECT method usage";
+  flow:to_server,established; http_method; content:"CONNECT";
+  sid:2000090; rev:1; classtype:policy-violation;)
+
+# ============================================
+# BOTNET SIGNATURES
+# ============================================
+
+alert tcp any any -> any 6667 (msg:"Botnet - IRC communication attempt";
+  flow:to_server,established; sid:2000100; rev:1; classtype:malware;)
+
+alert tcp any any -> any 8080 (msg:"Botnet - Alternate HTTP C&C port";
+  flow:to_server,established; dsize:>1024; sid:2000101; rev:1; classtype:malware;)
+
+# ============================================
+# RANSOMWARE PATTERNS
+# ============================================
+
+alert file-data (msg:"Ransomware - Suspicious executable behavior";
+  file_type:!jpeg,!png,!gif,!pdf; file_size:>5000000;
+  sid:2000110; rev:1; classtype:malware;)
+
+alert tcp any any -> any any (msg:"Ransomware - Possible payment server connection";
+  flow:to_server; threshold:type both,track by_src,count 5,seconds 10;
+  sid:2000111; rev:1; classtype:malware;)

@@ -1,0 +1,24 @@
+# Whitelist of trusted IP addresses - these will NOT be blocked
+# Add one IP per line, comments starting with #
+
+# Internal network IPs (do not block)
+192.168.1.1
+192.168.1.100-192.168.1.200
+10.0.0.0/8
+
+# Trusted external partners
+203.0.113.0
+198.51.100.0/24
+
+# Admin and monitoring stations
+10.20.0.0/16
+
+# Cloud providers
+# AWS
+54.0.0.0/8
+
+# Google Cloud
+8.34.208.0/20
+
+# Azure
+13.64.0.0/10

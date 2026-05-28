@@ -1,0 +1,22 @@
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Install Flask and dependencies
+RUN pip install --no-cache-dir \
+    Flask==2.3.0 \
+    Werkzeug==2.3.0 \
+    requests>=2.28.0
+
+# Copy dashboard app
+COPY dashboard/app.py .
+COPY dashboard/templates templates/
+
+# Create directories
+RUN mkdir -p logs data static
+
+# Expose port
+EXPOSE 5000
+
+# Run Flask app
+CMD ["python3", "app.py"]
