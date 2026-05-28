@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section class="login-shell">
+  <div class="panel">
+    <span class="mode-tag {{ mode }}">{{ mode }} mode</span>
+    <h1 style="font-size: clamp(2rem, 3vw, 3.6rem); margin-bottom: 14px;">{{ title }}</h1>
+    <p>{{ subtitle }}</p>
+
+    <form method="post">
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" autocomplete="username" placeholder="Enter username" required>
+
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter password" required>
+
+      <button type="submit">Sign in</button>
+    </form>
+
+    {% if result %}
+      <div class="message {% if success %}success{% else %}error{% endif %}">
+        {{ result }}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="panel">
+    {% if mode == 'vulnerable' %}
+      <h3>Observed weaknesses</h3>
+      <ul class="list">
+        <li>SQL query is built with an f-string</li>
+        <li>Passwords are stored in plain text and MD5 form</li>
+        <li>Error messages are echoed directly to the page</li>
+        <li>User input and query text are written to logs</li>
+      </ul>
+      <p class="footer-note">This page is intentionally unsafe and is only for classroom use.</p>
+    {% else %}
+      <h3>Secure controls</h3>
+      <ul class="list">
+        <li>Username format is validated before the database is touched</li>
+        <li>SQLite queries use parameter placeholders</li>
+        <li>Passwords are verified with bcrypt</li>
+        <li>Generic errors are shown to the user</li>
+      </ul>
+      <p class="footer-note">This page shows the safer version of the same login flow.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

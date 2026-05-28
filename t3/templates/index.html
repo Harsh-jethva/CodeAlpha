@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Secure Coding Review | Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <div class="pill-row">
+        <span class="pill bad">Vulnerable demo</span>
+        <span class="pill good">Secure demo</span>
+        <span class="pill">Flask website</span>
+      </div>
+      <h1>Login security, shown as a live website.</h1>
+      <p>
+        This project compares an intentionally insecure login flow with a hardened version.
+        The vulnerable route demonstrates SQL injection, plain-text password storage, MD5 hashing,
+        verbose error leakage, and sensitive logging. The secure route fixes those issues.
+      </p>
+      <a class="cta primary" href="{{ url_for('vulnerable_page') }}">Open vulnerable demo</a>
+      <a class="cta secondary" href="{{ url_for('secure_page') }}">Open secure demo</a>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Vulnerable route</h3>
+          <p>Purposefully insecure for teaching how attacks work and why the controls matter.</p>
+        </div>
+        <div class="card">
+          <h3>Secure route</h3>
+          <p>Uses safer defaults: parameterized SQL, bcrypt hashing, validation, and generic errors.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-panel card">
+      <h3>What is included</h3>
+      <ul class="list">
+        <li>SQL injection in the vulnerable login query</li>
+        <li>Plain-text password storage in the vulnerable database</li>
+        <li>Weak MD5 hashing for comparison</li>
+        <li>Verbose exceptions shown to the user</li>
+        <li>Sensitive data written to logs</li>
+      </ul>
+      <p class="footer-note">
+        Run the app locally, then open the vulnerable and secure pages side by side for comparison.
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}
