@@ -8,7 +8,7 @@ Combined documentation for both parts of this project:
 ## Project structure
 
 ```text
-t3/
+CodeAlpha_Secure-Coding-Review/
 ├── python/
 │   ├── login_vulnerable.py
 │   ├── login_secure.py
